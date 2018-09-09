@@ -1,0 +1,10 @@
+[Unit]
+Description=Bluetooth NAP PAN
+After=sys-devices-virtual-net-pan0.device
+
+[Service]
+ExecStart=/usr/bin/bt-network -s nap pan0
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
