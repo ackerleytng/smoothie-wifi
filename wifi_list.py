@@ -2,10 +2,10 @@ import subprocess
 import re
 
 def do_iwlist_scan():
-    p = subprocess.Popen(["iwlist", "wlan0", "scan"], stdout=subprocess.PIPE)
+    p = subprocess.Popen(["/sbin/iwlist", "wlan0", "scan"], stdout=subprocess.PIPE)
 
     # The first line is just some meta info
-    return p.communicate()[0].splitlines()[1:]
+    return p.communicate()[0].decode().splitlines()[1:]
 
 
 def split_list(l, pred):
