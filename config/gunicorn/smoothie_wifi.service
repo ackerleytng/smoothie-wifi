@@ -1,0 +1,16 @@
+# /etc/systemd/system/smoothie_wifi.service
+
+[Unit]
+Description=Gunicorn instance to serve smoothie_wifi
+After=sys-devices-virtual-net-pan0.device
+
+[Service]
+PIDFile=/tmp/gunicorn.pid
+Environment="PATH=/home/pi/venv/bin"
+WorkingDirectory=/home/pi/smoothie-wifi
+ExecStart=/home/pi/venv/bin/gunicorn -b localhost:5000 app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
