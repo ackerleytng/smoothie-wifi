@@ -56,8 +56,8 @@ def activate_config():
 
 
 def secure_config():
-    subprocess.check_call(shlex.split("chown root:root {}".format(WPA_CONF)))
-    subprocess.check_call(shlex.split("chmod 400 {}".format(WPA_CONF)))
+    subprocess.check_call(shlex.split("/bin/chown root:root {}".format(WPA_CONF)))
+    subprocess.check_call(shlex.split("/bin/chmod 400 {}".format(WPA_CONF)))
 
 
 def add_config(ssid, psk):
