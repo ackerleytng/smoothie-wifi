@@ -1,7 +1,5 @@
-# /etc/systemd/system/smoothie_wifi.service
-
 [Unit]
-Description=Gunicorn instance to serve smoothie_wifi
+Description=Gunicorn instance to serve smoothie-wifi
 After=sys-devices-virtual-net-pan0.device
 
 [Service]
