@@ -1,4 +1,5 @@
 import subprocess
+import string
 import shlex
 
 WPA_CONF = "/etc/wpa_supplicant/wpa_supplicant.conf"
@@ -44,6 +45,12 @@ def _append_config(existing, ssid, psk):
     return existing + _wrap_config(config) + ['']
 
 
+def _sanitize(s, string_name):
+    """Sanitizes s by throwing an exception"""
+    if any(c not in string.printable or c == "\n" or c == "\r" for c in s):
+        raise Exception("{} contains non-printable characters or newline!".format(string_name))
+
+
 def activate_config():
     subprocess.check_call(shlex.split("/sbin/wpa_cli -i wlan0 reconfigure"))
 
@@ -55,6 +62,9 @@ def secure_config():
 
 def add_config(ssid, psk):
     existing = None
+
+    _sanitize(ssid, "SSID/Network Name")
+    _sanitize(psk, "Password/Key")
 
     with open(WPA_CONF) as f:
         existing = [l.strip() for l in f.readlines()]
