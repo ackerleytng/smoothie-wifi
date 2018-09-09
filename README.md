@@ -15,3 +15,26 @@ interface.
 
 If you follow the config in `config/bluetooth-pan`, the raspi's ip
 will be `172.111.1.1`.
+
+## Implementation
+
+This is a wrapper around
+
++ `iwconfig`
++ `wpa_supplicant`
+
+It assumes that the above are installed and running as set up on a raspi.
+
+## Supported Wireless Configurations
+
+Hope this grows! Let me know if you need something in particular.
+
++ WPA-PSK
+
+```
+network={
+        ssid="the ssid"
+        psk="the key"
+        key_mgmt=WPA-PSK
+}
+```
