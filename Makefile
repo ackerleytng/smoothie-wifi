@@ -2,21 +2,26 @@ BOOTSTRAP=4.1.3
 JQUERY=3.3.1
 POPPER=1.14.4
 FONTAWESOME=5.3.1
+FONTS=fa-solid-900.ttf fa-solid-900.woff fa-solid-900.woff2
 
-.PHONY: all clean bootstrap jquery popper fontawesome
+.PHONY: all clean bootstrap jquery popper fontawesome webfonts
 
 all: bootstrap jquery popper fontawesome
 
 bootstrap: static/include/css/bootstrap.min.css static/include/js/bootstrap.min.js
 jquery: static/include/js/jquery.min.js
 popper: static/include/js/popper.min.js
-fontawesome: static/include/css/fontawesome.css
+webfonts: $(addprefix static/include/webfonts/,$(FONTS))
+fontawesome: static/include/css/fontawesome.css webfonts
 
 static/include/js:
 	mkdir -p static/include/js
 
 static/include/css:
 	mkdir -p static/include/css
+
+static/include/webfonts:
+	mkdir -p static/include/webfonts
 
 
 static/include/css/bootstrap.min.css: static/include/css
@@ -33,6 +38,9 @@ static/include/js/popper.min.js: static/include/js
 
 static/include/css/fontawesome.css: static/include/css
 	curl https://use.fontawesome.com/releases/v$(FONTAWESOME)/css/all.css -o $@
+
+static/include/webfonts/%: static/include/webfonts
+	curl https://use.fontawesome.com/releases/v$(FONTAWESOME)/webfonts/$* -o $@
 
 
 clean:
