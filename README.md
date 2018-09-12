@@ -38,3 +38,18 @@ network={
         key_mgmt=WPA-PSK
 }
 ```
+
+## Developing on the pi
+
+Syncing files over
+
+```
+rsync -avzh . pi@172.111.1.1:smoothie-wifi
+```
+
+Activating the virtualenv on the pi
+
+```
+$ cd ~
+$ . venv/bin/activate
+```
