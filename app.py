@@ -3,6 +3,7 @@ import re
 
 from wifi_list import scan_wifi_aps
 from wpa import add_config, remove_existing_config
+from connectivity import is_connected_to_internet
 
 
 def build_message(message):
@@ -37,6 +38,16 @@ class WifiResource(object):
         resp.media = build_message("Removed wifi config")
 
 
+class ConnectivityResource(object):
+    def on_get(self, req, resp, dest):
+        if dest == "internet":
+            resp.status = falcon.HTTP_200
+            resp.media = build_message(is_connected_to_internet())
+        else:
+            resp.status = falcon.HTTP_400
+            resp.media = build_message("Malformed request")
+
+
 class RequireJSON(object):
     def process_request(self, req, resp):
         if not req.client_accepts_json:
@@ -55,5 +66,5 @@ app = falcon.API(middleware=[
     RequireJSON()
 ])
 
-wifi = WifiResource()
-app.add_route("/wifi", wifi)
+app.add_route("/wifi", WifiResource())
+app.add_route("/connectivity/{dest}", ConnectivityResource())
