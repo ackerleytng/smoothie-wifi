@@ -53,7 +53,9 @@ const updateSelectWithAps = function () {
 const spinner = '<i class="fas fa-spinner fa-spin"></i> '
 
 const addSpinner = function (e) {
-  e.innerHTML = spinner + e.innerHTML
+  if (!e.innerHTML.includes(spinner)) {
+    e.innerHTML = spinner + e.innerHTML
+  }
 }
 
 const removeSpinner = function (e) {
