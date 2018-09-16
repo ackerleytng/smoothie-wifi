@@ -4,6 +4,7 @@ import re
 from wifi_list import scan_wifi_aps
 from wpa import add_config, remove_existing_config
 from connectivity import is_connected_to_internet
+from wifi_config import parse_iwconfig_selected
 
 
 def build_message(message):
@@ -42,7 +43,12 @@ class ConnectivityResource(object):
     def on_get(self, req, resp, dest):
         if dest == "internet":
             resp.status = falcon.HTTP_200
-            resp.media = build_message(is_connected_to_internet())
+            if is_connected_to_internet():
+                data = parse_iwconfig_selected()
+                data["connected"] = True
+                resp.media = data
+            else:
+                resp.media = {"connected": False}
         else:
             resp.status = falcon.HTTP_400
             resp.media = build_message("Malformed request")

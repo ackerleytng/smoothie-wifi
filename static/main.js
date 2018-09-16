@@ -1,4 +1,16 @@
 /*
+ * fetch error handling
+ */
+
+const handleErrors = function(response) {
+  if (response.ok) {
+    return response;
+  }
+
+  throw Error(response.statusText);
+}
+
+/*
  * Functions to get wifi APs
  */
 
@@ -10,6 +22,7 @@ const getWifiAps = function () {
     },
   }
   return fetch('/wifi', params)
+    .then(handleErrors)
     .then(r => r.json())
 }
 
@@ -28,7 +41,7 @@ const formatNetwork = function (network) {
 
 const createOption = function (network) {
   const option = document.createElement('option')
-  
+
   option.value = network.ESSID
   option.text = formatNetwork(network)
 
@@ -41,6 +54,8 @@ const updateSelect = function (networks) {
 }
 
 const updateSelectWithAps = function () {
+  console.log('updateSelectWithAps')
+
   getWifiAps()
     .then(sortByQuality)
     .then(updateSelect)
@@ -69,7 +84,7 @@ const removeSpinner = function (e) {
 const getWifiConfig = function () {
   const ssidSelect = document.getElementById('ssid')
   const pskInput = document.getElementById('password-field')
-  
+
   const ssid = ssidSelect.options[ssidSelect.selectedIndex].value
   const psk = pskInput.value
 
@@ -80,7 +95,6 @@ const getWifiConfig = function () {
 }
 
 const applySettingsRaw = function (data) {
-  console.log(data)
   const params = {
     method: 'POST',
     headers: {
@@ -89,7 +103,8 @@ const applySettingsRaw = function (data) {
     body: JSON.stringify(data)
   }
   return fetch('/wifi', params)
-    // TODO implement feedback for POST .then(r => r.json())
+    .then(handleErrors)
+  // TODO implement feedback for POST .then(r => r.json())
 }
 
 const applySettings = function () {
@@ -98,7 +113,7 @@ const applySettings = function () {
   addSpinner(button)
 
   applySettingsRaw(getWifiConfig())
-    .then(r => removeSpinner(button))  
+    .then(r => removeSpinner(button))
 }
 
 /*
@@ -113,6 +128,7 @@ const removeSettingsRaw = function () {
     },
   }
   return fetch('/wifi', params)
+    .then(handleErrors)
     .then(r => r.json())
 }
 
@@ -122,11 +138,63 @@ const removeSettings = function () {
   addSpinner(button)
 
   removeSettingsRaw()
-    .then(r => removeSpinner(button))  
+    .then(r => removeSpinner(button))
+}
+
+/*
+ * Updating connection status
+ */
+
+const fadeToConnected = function () {
+  $('#controls').slideUp()
+  $('#connected').slideDown()
+}
+
+const fadeToControls = function () {
+  $('#controls').slideDown()
+  $('#connected').slideUp()
+}
+
+const checkConnectivityRaw = function () {
+  const params = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+  return fetch('/connectivity/internet', params)
+    .then(handleErrors)
+    .then(r => r.json())
+}
+
+const displayConnectivity = function (data) {
+  if (data.connected) {
+    console.log(['connected', data])
+    $('#connected-info').html(`${data['ESSID']} (${data['Frequency']})<div><small class="text-muted">Quality: ${data['Link Quality']}</small></div>`)
+
+    if ($('#controls').is(':visible')) {
+      fadeToConnected()
+    }
+  } else {
+    console.log('not connected')
+    if ($('#connected').is(':visible')) {
+      fadeToControls()
+      updateSelectWithAps()
+    }
+  }
+}
+
+const checkConnectivity = function () {
+  console.log('checkConnectivity')
+  checkConnectivityRaw()
+    .then(displayConnectivity)
 }
 
 /*
  * "main"
  */
 
+$('#connected').hide()
+checkConnectivity()
 updateSelectWithAps()
+setInterval(checkConnectivity, 500)
