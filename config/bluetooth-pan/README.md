@@ -18,6 +18,7 @@ sudo systemctl start bt-agent
 sudo systemctl start bt-network
 ```
 
+
 # Bluetooth configuration
 
 I had to make bluetooth always be discoverable, so that a user can

@@ -2,5 +2,8 @@
 Name=pan0
 
 [Network]
-Address=172.111.1.1/24
+Address=172.17.2.1/24
 DHCPServer=yes
+
+[DHCPServer]
+DNS=172.17.2.1

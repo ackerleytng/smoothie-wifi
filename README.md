@@ -14,7 +14,7 @@ Bluetooth PAN and use this to configure the raspberry pi's wifi
 interface.
 
 If you follow the config in `config/bluetooth-pan`, the raspi's ip
-will be `172.111.1.1`.
+will be `172.17.2.1`.
 
 ## Implementation
 
@@ -44,7 +44,7 @@ network={
 Syncing files over
 
 ```
-rsync -avzh . pi@172.111.1.1:smoothie-wifi
+rsync -avzh . pi@172.17.2.1:smoothie-wifi
 ```
 
 Activating the virtualenv on the pi
